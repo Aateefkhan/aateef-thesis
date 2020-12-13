@@ -1,0 +1,63 @@
+Windows
+The Metro-style app provides a read-only version of Wikipedia, similar to the mobile web version. The app when used in Windows RT is incapable of showing moving pictures.
+Kiwix
+Kiwix has developed a number of offline apps based on Wikipedia content.
+
+Title	Description	Android	iOS	Windows	Other OS	Languages of content files by Kiwix	Website	Price	Open source
+Kiwix	Free program to download a whole Wikimedia project and read offline.	yes	yes	Windows 10 UWP;
+Older Windows (x86)	GNU/Linux,
+F-Droid
+Firefox Add-on, Chrome Extension,
+S60 3rd edition, feature pack 1 or later can show ZIM files via WikiOnBoard	286
+(wikipedia, wikivoyage, wiktionary, wikiversity, wikibooks, wikisource, wikiquote, wikinews, wikispecies)	Website	Free	Yes
+Medical Wikipedia (Offline)	Wikipedia's Offline Medical Encyclopedia. Based on Kiwix and developed in collaboration with Wiki Project Med Foundation.	AR, DE, EN, ES, FA, FR, JA, OR, PT, ZH	EN	WikiMed UWP EN;
+Kiwix JS + in-app download of any WikiMed language	only as content file (ZIM) in Kiwix or WikiOnBoard	AR, AS, BN, BPY, DE, EN, ES, FA, FR, GU, HI, IT, JA, KN, LO, ML, MR, OR, PA, PT, TA, TE, UR, ZH	Website	Free	Yes
+Wikivoyage	Wikivoyage's Offline. Based on Kiwix and providing a world mobile offline travel guide. A version for Europe exists too.	EN	DE	Wikivoyage UWP EN;
+Kiwix JS + in-app download of any Wikivoyage language	only as content file (ZIM) in Kiwix or WikiOnBoard	DE, EL, EN, ES, FA, FI, FR, HE, IT, NL, PL, PT, RO, RU, SV, UK, VI, ZH	Website	Free	Yes
+Unassociated apps
+This list is incomplete; you can help by adding missing items with reliable sources.
+These apps were mainly developed to display articles and are often used on platforms for which an official Wikipedia app was not formerly available, such as Windows Phone. Typical features include searching for articles, bookmarks, sharing, or enlarging images.
+
+Title	Description	Android	iOS	Windows 10 / Windows Phone	Website /
+Other OS	Price (in US$)	Open source
+Aard 2	A free offline dictionary reader for Android and Desktop/Web.[4]	yes			Website	Free	Yes
+Articles	By Sophiestication Software. — Wikipedia reader for iPad, iPad mini, iPhone and iPod touch.[5]		yes		Website	Free	
+Bing Wikipedia Browser	Bing Wikipedia Browser by Microsoft combines the content from Wikipedia with enhanced search, browse, and content recommendations based on the Bing Knowledge repository.			yes	Website	Free	
+EdgeWiki	A web app of wikipedia.org with a screen reader. Works on Windows 10, Windows 10 Mobile, and the Surface Hub.			yes		$0.99	
+GeoSearch for Wikipedia	By Yunhe Shi — Search and view geotagged Wikipedia articles from an visible map region.		yes		Website	Free	
+Inquire by Tamper	A context-aware Wikipedia reader that brings you the most interesting and relevant articles based on your location.		yes 
+(& Apple Watch)		Website	$0.99	
+Know Everything	Search by voice; for Pebble Watch.				Pebble	Free	Yes
+LearnDiscovery	By XDiscovery. — Displays and saves mindmaps of Wikipedia. Correlations between topics are organized to make sense of new information by visualizing the context about a topic. Bookmarks mindmaps instead of articles, and shares them as visual references.		yes		Website	$5.99	
+LoboWiki Reader for Wikipedia	All the links clicked are added to the reading queue, instead of being immediately opened to allow users to read articles in a distraction-free manner.	yes			Website	Free	
+Minipedia Offline Wikipedia	By Minipedia. — Access Wikipedia articles using iPod, iPhone or iPad without a network connection.	yes	yes		Website	Free	
+MiniWiki	Browse Wikipedia on an Apple Watch, see articles for nearby locations, and download articles for offline reading.		yes			Free	
+Mnemo's Library	An app that allows users to create, share, and review Wikipedia information and associated mnemonics/memory aids.	yes	yes	yes	Website	Free	Yes
+motî	Offline & multi-lingual dictionary app for language learners, taking data from the English Wiktionary.		yes		Website	Free	
+onePedia	A Wikipedia client which allows the viewing and editing of articles on Windows 10, Windows 10 Mobile, and the Surface Hub.			yes		Free	
+V for Wikipedia	By Raureif GmbH. — Wikipedia app for iPhone, iPad, and Apple Watch.		yes		Website	$4.99	
+WikiBOT	Continuous learning chatbot capable to provide answers to a wide range of questions as world capitals, real time weather info and more.				Website	Free	
+WikiCompass	WikiCompass gets nearby Wikipedia articles and lets you view them in augmented reality.		yes		Website	$0.99	
+WikiFlip	An app that turns Wikipedia images into a quiz game. Flip a picture and take a trivia quiz question from World of Knowledge, the ecosystem of multiple choice questions.	yes	yes		Website	Free	
+Wiki here	Shows nearby places from Wikipedia coordinate data on Windows 10, Windows 10 Mobile, and the Surface Hub.			yes		Free	
+WikiMaster	A game app that has over 330000 multiple choice questions on top of Wikipedia articles.	yes	yes		Website	Free	
+WikiNodes	By Institute for Dynamic Educational Advancement (IDEA).[6][7][8]		yes			$1.99	
+Wikipanion	By Robert Chin — Easy, search, navigation and display of Wikipedia entries. Streamline your browsing with history grouped by visit date, and bookmarking for individual entries and sections within an entry.		yes		Website	Free	
+Wikipedia Nearby	Articles near current location; for Pebble Watch.				Pebble	Free	Yes
+Wikipebble	Search by voice or keyboard; for Pebble Watch.				Pebble	Free	
+Wikiwand	Made to allow easier navigation and search than the website or the site's own app.[9][10][11]	Currently invitation only[12]	yes		Website	Free	
+Wikiweb	Wikiweb is a Wikipedia reader for iPhone and iPad that visualizes the connections between articles.[13][14]		yes		Website	$4.99	
+Zimpedia	Offline reader for Wikipedia and other Wiki projects stored in a ZIM format.				Sailfish OS BlackBerry 10	Free	Yes
+Related apps
+A number of apps for Wikipedia's sister projects exist. These include the Wiki Loves Monuments app, written for a 2012 photo contest, as an aid for Wikiphotographers. It shows a map of nearby national heritage register items, indicating whether Wikipedia had a photo for the site, and enabling quick and easy photo uploads for camera phones. It is not integrated with the official article display app.[15]
+
+There is an Android app for Wikimedia Commons[16] which is community maintained. There is also an Android app for Wiktionary, although it is no longer supported and has not been updated since August 2013.[17]
+
+References
+^ "Index of /mobile". releases.wikimedia.org. Retrieved 2017-06-16.
+^ package in F-Droid
+^ "iPhone App of the Week: Wikipedia Mobile". Smartcompany.com.au. 2011-06-17. Retrieved 2012-07-08.
+^ "Desktop — Aard Dictionary". Aarddict.org. 2012-02-26. Retrieved 2012-07-08.
+^ Mike Schramm (2010-06-09). "Apple Design Awards go to popular iPhone and iPad apps". TUAW. Retrieved 2012-08-12.
+^ "WikiNodes Brings A New Perspective To Knowledge » 148Apps » iPhone and iPod Touch Application Reviews and News". 148Apps. 2011-05-10. Retrieved 2012-07-08.
+^ "WikiNodes for iPad – Making Wikipedia Fun to Explore — iPad Insight". Ipadinsight.com. 2011-05-12. Archived from the original on 2012-10-13. Retrieved 2012-07-08.
