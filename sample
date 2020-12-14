@@ -60,4 +60,2373 @@ References
 ^ "Desktop — Aard Dictionary". Aarddict.org. 2012-02-26. Retrieved 2012-07-08.
 ^ Mike Schramm (2010-06-09). "Apple Design Awards go to popular iPhone and iPad apps". TUAW. Retrieved 2012-08-12.
 ^ "WikiNodes Brings A New Perspective To Knowledge » 148Apps » iPhone and iPod Touch Application Reviews and News". 148Apps. 2011-05-10. Retrieved 2012-07-08.
-^ "WikiNodes for iPad – Making Wikipedia Fun to Explore — iPad Insight". Ipadinsight.com. 2011-05-12. Archived from the original on 2012-10-13. Retrieved 2012-07-08.
+^ "WikiNodes for iPad – Making Wikipedia Fun to Explore —i
+
+Log in Sign up
+By using our site, you acknowledge that you have read and understand our Cookie Policy, Privacy Policy, and our Terms of Service.
+TeX - LaTeX Stack Exchange is a question and answer site for users of TeX, LaTeX, ConTeXt, and related typesetting systems. It only takes a minute to sign up.
+
+Sign up to join this community
+
+Anybody can ask a question
+
+Anybody can answer
+
+The best answers are voted up and rise to the top
+
+TeX - LaTeX
+Home
+Questions
+Tags
+Users
+Unanswered
+Jobs
+How to shift graphics/adjust placement of figure with \includegraphics
+Ask Question
+Asked 7 years, 8 months ago
+Active 6 years, 5 months ago
+Viewed 131k times
+
+40
+
+
+23
+I composed a diagram that takes up the entire sheet of paper in landscape mode, called diagram.tex (compiled it to generate pdf). I'm trying to include that into an article, but only half of it is showing; the bottom half is cut off by the right end of the paper.
+
+I was able to get it in the proper orientation by using
+
+\includegraphics[angle=90]{diagram.pdf}
+
+But because the bottom half of it is cut off, I need some sort of option where I can do something like this:
+
+\includegraphics[angle=90, shift left = 5cm]{diagram.pdf}
+
+to pull the rest of the image left (or up, depending on how you're looking at it).
+
+So how can I move the figure around?
+I'm not sure if this is relevant, but I'm using the following documentclass and packages in my paper:
+
+\documentclass[11pt,a4paper,twoside]{article}
+\usepackage{tikz, graphicx}
+Edit:
+
+This is not an issue with pushing it past the margins. Half of the picture is not on the paper (sort of like if you stuck half of your left hand behind the left side of your monitor). I need to pull the paper left (just like you would shift your hand left to see it).
+tikz-pgf
+graphics
+include
+landscape
+share  improve this question   follow  
+edited Apr 8 '13 at 1:58
+asked Apr 7 '13 at 8:10
+
+TheRealFakeNews
+4,3071111 gold badges3333 silver badges4848 bronze badges
+have you tried to specify \includegraphics[width=1\textwidth, angle=90]{...}? – Holene Apr 7 '13 at 8:24 
+@Holene I tried it an it shrinks the image, even though all of it is there – TheRealFakeNews Apr 7 '13 at 8:30
+@KevinC Could you expand on that? I'm not even sure where in the manual I would be able to find that. – TheRealFakeNews Apr 7 '13 at 8:32
+1
+width = 1\textwidth will scale the input pdf such that it actually fits the page. I may misunderstand how your problem really looks like, but to me it sounds like you want to push the left side of the pdf past the page margins. In my opinion it's better to stay to the margins. Alternatively you could use the PDFpages package and include the entire PDF? – Holene Apr 7 '13 at 8:34 
+@AlanH: Sorry I was wrong about my previous suggestion. But how about this: \hspace{-<some number>in}\includegraphics[angel=90]{...}? Basically this shifts the included picture left by <some number> inch. – Herr K. Apr 7 '13 at 9:03 
+show 2 more comments
+3 Answers
+Active
+Oldest
+Votes
+ 
+61
+
+ \includegraphics makes a box that is positioned the same way \mbox{} or A are positioned. If you want to move it 3cm to the left use
+
+\hspace*{-3cm}\includegraphics.....
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:32
+
+David Carlisle
+584k5151 gold badges13231323 silver badges21132113 bronze badges
+8
+Sorry to interrupt; why use the starred version of \hspace? – Svend Tveskæg Apr 7 '13 at 9:35
+16
+@SvendTveskæg because if it is the beginning of a line white glue is discarded so white space and normal \hspace have no effect. – David Carlisle Apr 7 '13 at 9:39 
+add a comment
+ 
+30
+
+To include shifts directly in the options part of the \includegraphics[options]{graphic.pdf} part of the command, a more straight forward way is the
+
+`trim=left bottom right top` 
+option. Here, left, bottom, right, and top are units of length, which trim the graphic for positive values and add space for negative values.
+
+So to move to the right by 5cm and 1 cm from the top, you would do:
+
+\includegraphics[trim=-5cm 0 0 -1cm]{diagram.pdf}
+share  improve this answer   follow  
+answered Jul 15 '14 at 12:47
+
+littlemind
+40144 silver badges22 bronze badges
+6
+It is better so post complete working examples instead fragments of code – user31729 Jul 15 '14 at 12:54
+This worked for me. – polym May 13 '15 at 23:28
+Does the trick, even though I find the parameter name to be misleading (I associate "trimming" with "cropping" instead of "offsetting"). – Waldir Leoncio May 11 '18 at 11:46
+This works especially well with figures that have some trailing whitespace preventing any accurate automatic centering! If you trim the whitespace, automatic centering with \includegraphics[width=\linewidth] works again. – bhnn Oct 7 '18 at 17:31 
+add a comment
+ 
+7
+
+Opting for an answer as the comments with a lot of code have pretty low readability. The ninja pic is taken from http://tinyurl.com/btapmmx
+
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\begin{document}
+\begin{figure}
+\begin{tikzpicture}
+    \begin{scope}
+    \node {Node 1: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+    \begin{scope}[xshift=-5cm]
+    \node {Node 2: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+\end{tikzpicture}
+\end{figure}
+\end{document}
+Node 2 is now shifted, so if you skip the code for the scopes and node 1, and include your pdf in node 2 you should be able to shift the included pdf here and there.
+
+The result: enter image description here
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:12
+
+Holene
+6,38044 gold badges3131 silver badges6464 bronze badges
+Hmm, does the xshift option only work when there are two scopes? I was trying with only one scope, and the xshift option wasn't doing anything... – Herr K. Apr 7 '13 at 9:16
+1
+@KevinC No, you can simply do: \begin{tikzpicture}[xshift=-5cm] \node{node content}; \end{tikzpicture}. I added the two scopes just to illustrate the difference with and without xshift =) It works fine for me using only one scope too. – Holene Apr 7 '13 at 9:17 
+@Holene Okay, I think it's because the picture I'm importing has a slight margin, so I need to pull it past the margin in my article, which is why nothing was shifting for me, it's already pulled to the margin of the article. If I rescale it, which I tried, the picture doesn't look right. – TheRealFakeNews Apr 7 '13 at 9:19
+Have you tried adding the .tex source file in a figure environment instead of the compiled pdf, e.g. \input{source_file.tex}. I think you'll have to fix the orientation etc. in the .tex file though. – Holene Apr 7 '13 at 9:21
+@Holene: I did exactly what you said there... Perhaps it's my home computer's fault (I haven't updated my MikTeX for ages). – Herr K. Apr 7 '13 at 9:22
+show 1 more comment
+Your Answer
+
+
+Sign up or log in
+ Sign up using Google
+ Sign up using Facebook
+ Sign up using Email and Password
+Post as a guest
+Name
+
+Email
+Required, but never shown
+
+Post Your Answer
+By clicking “Post Your Answer”, you agree to our terms of service, privacy policy and cookie policy
+
+Not the answer you're looking for? Browse other questions tagged tikz-pgf graphics include landscape or ask your own question.
+
+The Overflow Blog
+The semantic future of the web
+Podcast 294: Cleaning up build systems and gathering computer history
+Featured on Meta
+New Feature: Table Support
+Linked
+
+0
+Shift an image horizontally
+8
+Positioning includegraphics vertically on a line?
+3
+Add extra space at the bottom with a rectangle containing an image, TikZ
+1
+moving figure to the right
+1
+How to move includegraphics
+Related
+
+2
+Problems with alignment with landscape table
+11
+graphics - dynamic image placement
+150
+Placeholder for figure/includegraphics
+4
+How to change font size in graphics included with \includegraphics
+0
+How can I change graphics with timeout in a beamer?
+5
+Is there any way to shift two \includegraphics images? Having trouble with \begin{figure}
+8
+Imposition for an 8 page booklet using pgfpages
+0
+How to use \includegraphics with package graphics?
+2
+Package-Conflict booklet and graphicx?
+1
+Arrow between BTrees
+Hot Network Questions
+
+Calculating parking fees, given start and end timestamps
+What does the crash early concept mean?
+Where can I travel to receive a COVID vaccine as a tourist?
+What is an idiom for "a supervening act that renders a course of action unnecessary"?
+Given a legal chess position, is there an algorithm that gets a series of moves that lead to it?
+How to gzip 100 GB files faster with high compression
+Email server certificate valid according to CheckTLS, invalid according to Thunderbird
+Why isn't the Sad Clown's torso in Stud.io?
+Why it is important to write a function as sum of even and odd functions?
+"Factorise" a quadratic
+Uniqueness of infinite direct sum decomposition
+I don't understand the bottom number in a time signature
+Scramble a Megaminx!
+How could a 6-way, zero-G, space constrained, 3D, flying car intersection work?
+Why would a company prevent their employees from selling their pre-IPO equity?
+What is the Schäffer Clef?
+I'm piece of cake. Anti-me can be fatal
+How to plot an array of lines?
+How to view annotated powerpoint presentations in Ubuntu?
+Effects of being hit by an object going at FTL speeds
+Guitarist and Bassist as only Bandmembers - Rhythmsection?
+Reviewing article and bad-faith citation
+Does the Qiskit ADMM optimizer really run on quantum computers?
+Mimic the X11 Primary selection
+ Question feed
+
+TEX - LATEX
+
+Tour
+Help
+Chat
+Contact
+Feedback
+Mobile
+Disable Responsiveness
+COMPANY
+
+Stack Overflow
+For Teams
+Advertise With Us
+Hire a Developer
+Developer Jobs
+About
+Press
+Legal
+Privacy Policy
+STACK EXCHANGE
+NETWORK
+
+Technology
+Life / Arts
+Culture / Recreation
+Science
+Other
+Blog
+Facebook
+Twitter
+LinkedIn
+Instagram
+site design / logo © 2020 Stack Exchange Inc; user contributions licensed under cc by-sa. rev 2020.12.10.38158
+
+  
+
+Log in Sign up
+By using our site, you acknowledge that you have read and understand our Cookie Policy, Privacy Policy, and our Terms of Service.
+TeX - LaTeX Stack Exchange is a question and answer site for users of TeX, LaTeX, ConTeXt, and related typesetting systems. It only takes a minute to sign up.
+
+Sign up to join this community
+
+Anybody can ask a question
+
+Anybody can answer
+
+The best answers are voted up and rise to the top
+
+TeX - LaTeX
+Home
+Questions
+Tags
+Users
+Unanswered
+Jobs
+How to shift graphics/adjust placement of figure with \includegraphics
+Ask Question
+Asked 7 years, 8 months ago
+Active 6 years, 5 months ago
+Viewed 131k times
+
+40
+
+
+23
+I composed a diagram that takes up the entire sheet of paper in landscape mode, called diagram.tex (compiled it to generate pdf). I'm trying to include that into an article, but only half of it is showing; the bottom half is cut off by the right end of the paper.
+
+I was able to get it in the proper orientation by using
+
+\includegraphics[angle=90]{diagram.pdf}
+
+But because the bottom half of it is cut off, I need some sort of option where I can do something like this:
+
+\includegraphics[angle=90, shift left = 5cm]{diagram.pdf}
+
+to pull the rest of the image left (or up, depending on how you're looking at it).
+
+So how can I move the figure around?
+I'm not sure if this is relevant, but I'm using the following documentclass and packages in my paper:
+
+\documentclass[11pt,a4paper,twoside]{article}
+\usepackage{tikz, graphicx}
+Edit:
+
+This is not an issue with pushing it past the margins. Half of the picture is not on the paper (sort of like if you stuck half of your left hand behind the left side of your monitor). I need to pull the paper left (just like you would shift your hand left to see it).
+tikz-pgf
+graphics
+include
+landscape
+share  improve this question   follow  
+edited Apr 8 '13 at 1:58
+asked Apr 7 '13 at 8:10
+
+TheRealFakeNews
+4,3071111 gold badges3333 silver badges4848 bronze badges
+have you tried to specify \includegraphics[width=1\textwidth, angle=90]{...}? – Holene Apr 7 '13 at 8:24 
+@Holene I tried it an it shrinks the image, even though all of it is there – TheRealFakeNews Apr 7 '13 at 8:30
+@KevinC Could you expand on that? I'm not even sure where in the manual I would be able to find that. – TheRealFakeNews Apr 7 '13 at 8:32
+1
+width = 1\textwidth will scale the input pdf such that it actually fits the page. I may misunderstand how your problem really looks like, but to me it sounds like you want to push the left side of the pdf past the page margins. In my opinion it's better to stay to the margins. Alternatively you could use the PDFpages package and include the entire PDF? – Holene Apr 7 '13 at 8:34 
+@AlanH: Sorry I was wrong about my previous suggestion. But how about this: \hspace{-<some number>in}\includegraphics[angel=90]{...}? Basically this shifts the included picture left by <some number> inch. – Herr K. Apr 7 '13 at 9:03 
+show 2 more comments
+3 Answers
+Active
+Oldest
+Votes
+ 
+61
+
+ \includegraphics makes a box that is positioned the same way \mbox{} or A are positioned. If you want to move it 3cm to the left use
+
+\hspace*{-3cm}\includegraphics.....
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:32
+
+David Carlisle
+584k5151 gold badges13231323 silver badges21132113 bronze badges
+8
+Sorry to interrupt; why use the starred version of \hspace? – Svend Tveskæg Apr 7 '13 at 9:35
+16
+@SvendTveskæg because if it is the beginning of a line white glue is discarded so white space and normal \hspace have no effect. – David Carlisle Apr 7 '13 at 9:39 
+add a comment
+ 
+30
+
+To include shifts directly in the options part of the \includegraphics[options]{graphic.pdf} part of the command, a more straight forward way is the
+
+`trim=left bottom right top` 
+option. Here, left, bottom, right, and top are units of length, which trim the graphic for positive values and add space for negative values.
+
+So to move to the right by 5cm and 1 cm from the top, you would do:
+
+\includegraphics[trim=-5cm 0 0 -1cm]{diagram.pdf}
+share  improve this answer   follow  
+answered Jul 15 '14 at 12:47
+
+littlemind
+40144 silver badges22 bronze badges
+6
+It is better so post complete working examples instead fragments of code – user31729 Jul 15 '14 at 12:54
+This worked for me. – polym May 13 '15 at 23:28
+Does the trick, even though I find the parameter name to be misleading (I associate "trimming" with "cropping" instead of "offsetting"). – Waldir Leoncio May 11 '18 at 11:46
+This works especially well with figures that have some trailing whitespace preventing any accurate automatic centering! If you trim the whitespace, automatic centering with \includegraphics[width=\linewidth] works again. – bhnn Oct 7 '18 at 17:31 
+add a comment
+ 
+7
+
+Opting for an answer as the comments with a lot of code have pretty low readability. The ninja pic is taken from http://tinyurl.com/btapmmx
+
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\begin{document}
+\begin{figure}
+\begin{tikzpicture}
+    \begin{scope}
+    \node {Node 1: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+    \begin{scope}[xshift=-5cm]
+    \node {Node 2: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+\end{tikzpicture}
+\end{figure}
+\end{document}
+Node 2 is now shifted, so if you skip the code for the scopes and node 1, and include your pdf in node 2 you should be able to shift the included pdf here and there.
+
+The result: enter image description here
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:12
+
+Holene
+6,38044 gold badges3131 silver badges6464 bronze badges
+Hmm, does the xshift option only work when there are two scopes? I was trying with only one scope, and the xshift option wasn't doing anything... – Herr K. Apr 7 '13 at 9:16
+1
+@KevinC No, you can simply do: \begin{tikzpicture}[xshift=-5cm] \node{node content}; \end{tikzpicture}. I added the two scopes just to illustrate the difference with and without xshift =) It works fine for me using only one scope too. – Holene Apr 7 '13 at 9:17 
+@Holene Okay, I think it's because the picture I'm importing has a slight margin, so I need to pull it past the margin in my article, which is why nothing was shifting for me, it's already pulled to the margin of the article. If I rescale it, which I tried, the picture doesn't look right. – TheRealFakeNews Apr 7 '13 at 9:19
+Have you tried adding the .tex source file in a figure environment instead of the compiled pdf, e.g. \input{source_file.tex}. I think you'll have to fix the orientation etc. in the .tex file though. – Holene Apr 7 '13 at 9:21
+@Holene: I did exactly what you said there... Perhaps it's my home computer's fault (I haven't updated my MikTeX for ages). – Herr K. Apr 7 '13 at 9:22
+show 1 more comment
+Your Answer
+
+
+Sign up or log in
+ Sign up using Google
+ Sign up using Facebook
+ Sign up using Email and Password
+Post as a guest
+Name
+
+Email
+Required, but never shown
+
+Post Your Answer
+By clicking “Post Your Answer”, you agree to our terms of service, privacy policy and cookie policy
+
+Not the answer you're looking for? Browse other questions tagged tikz-pgf graphics include landscape or ask your own question.
+
+The Overflow Blog
+The semantic future of the web
+Podcast 294: Cleaning up build systems and gathering computer history
+Featured on Meta
+New Feature: Table Support
+Linked
+
+0
+Shift an image horizontally
+8
+Positioning includegraphics vertically on a line?
+3
+Add extra space at the bottom with a rectangle containing an image, TikZ
+1
+moving figure to the right
+1
+How to move includegraphics
+Related
+
+2
+Problems with alignment with landscape table
+11
+graphics - dynamic image placement
+150
+Placeholder for figure/includegraphics
+4
+How to change font size in graphics included with \includegraphics
+0
+How can I change graphics with timeout in a beamer?
+5
+Is there any way to shift two \includegraphics images? Having trouble with \begin{figure}
+8
+Imposition for an 8 page booklet using pgfpages
+0
+How to use \includegraphics with package graphics?
+2
+Package-Conflict booklet and graphicx?
+1
+Arrow between BTrees
+Hot Network Questions
+
+Calculating parking fees, given start and end timestamps
+What does the crash early concept mean?
+Where can I travel to receive a COVID vaccine as a tourist?
+What is an idiom for "a supervening act that renders a course of action unnecessary"?
+Given a legal chess position, is there an algorithm that gets a series of moves that lead to it?
+How to gzip 100 GB files faster with high compression
+Email server certificate valid according to CheckTLS, invalid according to Thunderbird
+Why isn't the Sad Clown's torso in Stud.io?
+Why it is important to write a function as sum of even and odd functions?
+"Factorise" a quadratic
+Uniqueness of infinite direct sum decomposition
+I don't understand the bottom number in a time signature
+Scramble a Megaminx!
+How could a 6-way, zero-G, space constrained, 3D, flying car intersection work?
+Why would a company prevent their employees from selling their pre-IPO equity?
+What is the Schäffer Clef?
+I'm piece of cake. Anti-me can be fatal
+How to plot an array of lines?
+How to view annotated powerpoint presentations in Ubuntu?
+Effects of being hit by an object going at FTL speeds
+Guitarist and Bassist as only Bandmembers - Rhythmsection?
+Reviewing article and bad-faith citation
+Does the Qiskit ADMM optimizer really run on quantum computers?
+Mimic the X11 Primary selection
+ Question feed
+
+TEX - LATEX
+
+Tour
+Help
+Chat
+Contact
+Feedback
+Mobile
+Disable Responsiveness
+COMPANY
+
+Stack Overflow
+For Teams
+Advertise With Us
+Hire a Developer
+Developer Jobs
+About
+Press
+Legal
+Privacy Policy
+STACK EXCHANGE
+NETWORK
+
+Technology
+Life / Arts
+Culture / Recreation
+Science
+Other
+Blog
+Facebook
+Twitter
+LinkedIn
+Instagram
+site design / logo © 2020 Stack Exchange Inc; user contributions licensed under cc by-sa. rev 2020.12.10.38158
+
+ 
+Log in Sign up
+By using our site, you acknowledge that you have read and understand our Cookie Policy, Privacy Policy, and our Terms of Service.
+TeX - LaTeX Stack Exchange is a question and answer site for users of TeX, LaTeX, ConTeXt, and related typesetting systems. It only takes a minute to sign up.
+
+Sign up to join this community
+
+Anybody can ask a question
+
+Anybody can answer
+
+The best answers are voted up and rise to the top
+
+TeX - LaTeX
+Home
+Questions
+Tags
+Users
+Unanswered
+Jobs
+How to shift graphics/adjust placement of figure with \includegraphics
+Ask Question
+Asked 7 years, 8 months ago
+Active 6 years, 5 months ago
+Viewed 131k times
+
+40
+
+
+23
+I composed a diagram that takes up the entire sheet of paper in landscape mode, called diagram.tex (compiled it to generate pdf). I'm trying to include that into an article, but only half of it is showing; the bottom half is cut off by the right end of the paper.
+
+I was able to get it in the proper orientation by using
+
+\includegraphics[angle=90]{diagram.pdf}
+
+But because the bottom half of it is cut off, I need some sort of option where I can do something like this:
+
+\includegraphics[angle=90, shift left = 5cm]{diagram.pdf}
+
+to pull the rest of the image left (or up, depending on how you're looking at it).
+
+So how can I move the figure around?
+I'm not sure if this is relevant, but I'm using the following documentclass and packages in my paper:
+
+\documentclass[11pt,a4paper,twoside]{article}
+\usepackage{tikz, graphicx}
+Edit:
+
+This is not an issue with pushing it past the margins. Half of the picture is not on the paper (sort of like if you stuck half of your left hand behind the left side of your monitor). I need to pull the paper left (just like you would shift your hand left to see it).
+tikz-pgf
+graphics
+include
+landscape
+share  improve this question   follow  
+edited Apr 8 '13 at 1:58
+asked Apr 7 '13 at 8:10
+
+TheRealFakeNews
+4,3071111 gold badges3333 silver badges4848 bronze badges
+have you tried to specify \includegraphics[width=1\textwidth, angle=90]{...}? – Holene Apr 7 '13 at 8:24 
+@Holene I tried it an it shrinks the image, even though all of it is there – TheRealFakeNews Apr 7 '13 at 8:30
+@KevinC Could you expand on that? I'm not even sure where in the manual I would be able to find that. – TheRealFakeNews Apr 7 '13 at 8:32
+1
+width = 1\textwidth will scale the input pdf such that it actually fits the page. I may misunderstand how your problem really looks like, but to me it sounds like you want to push the left side of the pdf past the page margins. In my opinion it's better to stay to the margins. Alternatively you could use the PDFpages package and include the entire PDF? – Holene Apr 7 '13 at 8:34 
+@AlanH: Sorry I was wrong about my previous suggestion. But how about this: \hspace{-<some number>in}\includegraphics[angel=90]{...}? Basically this shifts the included picture left by <some number> inch. – Herr K. Apr 7 '13 at 9:03 
+show 2 more comments
+3 Answers
+Active
+Oldest
+Votes
+ 
+61
+
+ \includegraphics makes a box that is positioned the same way \mbox{} or A are positioned. If you want to move it 3cm to the left use
+
+\hspace*{-3cm}\includegraphics.....
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:32
+
+David Carlisle
+584k5151 gold badges13231323 silver badges21132113 bronze badges
+8
+Sorry to interrupt; why use the starred version of \hspace? – Svend Tveskæg Apr 7 '13 at 9:35
+16
+@SvendTveskæg because if it is the beginning of a line white glue is discarded so white space and normal \hspace have no effect. – David Carlisle Apr 7 '13 at 9:39 
+add a comment
+ 
+30
+
+To include shifts directly in the options part of the \includegraphics[options]{graphic.pdf} part of the command, a more straight forward way is the
+
+`trim=left bottom right top` 
+option. Here, left, bottom, right, and top are units of length, which trim the graphic for positive values and add space for negative values.
+
+So to move to the right by 5cm and 1 cm from the top, you would do:
+
+\includegraphics[trim=-5cm 0 0 -1cm]{diagram.pdf}
+share  improve this answer   follow  
+answered Jul 15 '14 at 12:47
+
+littlemind
+40144 silver badges22 bronze badges
+6
+It is better so post complete working examples instead fragments of code – user31729 Jul 15 '14 at 12:54
+This worked for me. – polym May 13 '15 at 23:28
+Does the trick, even though I find the parameter name to be misleading (I associate "trimming" with "cropping" instead of "offsetting"). – Waldir Leoncio May 11 '18 at 11:46
+This works especially well with figures that have some trailing whitespace preventing any accurate automatic centering! If you trim the whitespace, automatic centering with \includegraphics[width=\linewidth] works again. – bhnn Oct 7 '18 at 17:31 
+add a comment
+ 
+7
+
+Opting for an answer as the comments with a lot of code have pretty low readability. The ninja pic is taken from http://tinyurl.com/btapmmx
+
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\begin{document}
+\begin{figure}
+\begin{tikzpicture}
+    \begin{scope}
+    \node {Node 1: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+    \begin{scope}[xshift=-5cm]
+    \node {Node 2: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+\end{tikzpicture}
+\end{figure}
+\end{document}
+Node 2 is now shifted, so if you skip the code for the scopes and node 1, and include your pdf in node 2 you should be able to shift the included pdf here and there.
+
+The result: enter image description here
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:12
+
+Holene
+6,38044 gold badges3131 silver badges6464 bronze badges
+Hmm, does the xshift option only work when there are two scopes? I was trying with only one scope, and the xshift option wasn't doing anything... – Herr K. Apr 7 '13 at 9:16
+1
+@KevinC No, you can simply do: \begin{tikzpicture}[xshift=-5cm] \node{node content}; \end{tikzpicture}. I added the two scopes just to illustrate the difference with and without xshift =) It works fine for me using only one scope too. – Holene Apr 7 '13 at 9:17 
+@Holene Okay, I think it's because the picture I'm importing has a slight margin, so I need to pull it past the margin in my article, which is why nothing was shifting for me, it's already pulled to the margin of the article. If I rescale it, which I tried, the picture doesn't look right. – TheRealFakeNews Apr 7 '13 at 9:19
+Have you tried adding the .tex source file in a figure environment instead of the compiled pdf, e.g. \input{source_file.tex}. I think you'll have to fix the orientation etc. in the .tex file though. – Holene Apr 7 '13 at 9:21
+@Holene: I did exactly what you said there... Perhaps it's my home computer's fault (I haven't updated my MikTeX for ages). – Herr K. Apr 7 '13 at 9:22
+show 1 more comment
+Your Answer
+
+
+Sign up or log in
+ Sign up using Google
+ Sign up using Facebook
+ Sign up using Email and Password
+Post as a guest
+Name
+
+Email
+Required, but never shown
+
+Post Your Answer
+By clicking “Post Your Answer”, you agree to our terms of service, privacy policy and cookie policy
+
+Not the answer you're looking for? Browse other questions tagged tikz-pgf graphics include landscape or ask your own question.
+
+The Overflow Blog
+The semantic future of the web
+Podcast 294: Cleaning up build systems and gathering computer history
+Featured on Meta
+New Feature: Table Support
+Linked
+
+0
+Shift an image horizontally
+8
+Positioning includegraphics vertically on a line?
+3
+Add extra space at the bottom with a rectangle containing an image, TikZ
+1
+moving figure to the right
+1
+How to move includegraphics
+Related
+
+2
+Problems with alignment with landscape table
+11
+graphics - dynamic image placement
+150
+Placeholder for figure/includegraphics
+4
+How to change font size in graphics included with \includegraphics
+0
+How can I change graphics with timeout in a beamer?
+5
+Is there any way to shift two \includegraphics images? Having trouble with \begin{figure}
+8
+Imposition for an 8 page booklet using pgfpages
+0
+How to use \includegraphics with package graphics?
+2
+Package-Conflict booklet and graphicx?
+1
+Arrow between BTrees
+Hot Network Questions
+
+Calculating parking fees, given start and end timestamps
+What does the crash early concept mean?
+Where can I travel to receive a COVID vaccine as a tourist?
+What is an idiom for "a supervening act that renders a course of action unnecessary"?
+Given a legal chess position, is there an algorithm that gets a series of moves that lead to it?
+How to gzip 100 GB files faster with high compression
+Email server certificate valid according to CheckTLS, invalid according to Thunderbird
+Why isn't the Sad Clown's torso in Stud.io?
+Why it is important to write a function as sum of even and odd functions?
+"Factorise" a quadratic
+Uniqueness of infinite direct sum decomposition
+I don't understand the bottom number in a time signature
+Scramble a Megaminx!
+How could a 6-way, zero-G, space constrained, 3D, flying car intersection work?
+Why would a company prevent their employees from selling their pre-IPO equity?
+What is the Schäffer Clef?
+I'm piece of cake. Anti-me can be fatal
+How to plot an array of lines?
+How to view annotated powerpoint presentations in Ubuntu?
+Effects of being hit by an object going at FTL speeds
+Guitarist and Bassist as only Bandmembers - Rhythmsection?
+Reviewing article and bad-faith citation
+Does the Qiskit ADMM optimizer really run on quantum computers?
+Mimic the X11 Primary selection
+ Question feed
+
+TEX - LATEX
+
+Tour
+Help
+Chat
+Contact
+Feedback
+Mobile
+Disable Responsiveness
+COMPANY
+
+Stack Overflow
+For Teams
+Advertise With Us
+Hire a Developer
+Developer Jobs
+About
+Press
+Legal
+Privacy Policy
+STACK EXCHANGE
+NETWORK
+
+Technology
+Life / Arts
+Culture / Recreation
+Science
+Other
+Blog
+Facebook
+Twitter
+LinkedIn
+Instagram
+site design / logo © 2020 Stack Exchange Inc; user contributions licensed under cc by-sa. rev 2020.12.10.38158
+
+ 
+Log in Sign up
+By using our site, you acknowledge that you have read and understand our Cookie Policy, Privacy Policy, and our Terms of Service.
+TeX - LaTeX Stack Exchange is a question and answer site for users of TeX, LaTeX, ConTeXt, and related typesetting systems. It only takes a minute to sign up.
+
+Sign up to join this community
+
+Anybody can ask a question
+
+Anybody can answer
+
+The best answers are voted up and rise to the top
+
+TeX - LaTeX
+Home
+Questions
+Tags
+Users
+Unanswered
+Jobs
+How to shift graphics/adjust placement of figure with \includegraphics
+Ask Question
+Asked 7 years, 8 months ago
+Active 6 years, 5 months ago
+Viewed 131k times
+
+40
+
+
+23
+I composed a diagram that takes up the entire sheet of paper in landscape mode, called diagram.tex (compiled it to generate pdf). I'm trying to include that into an article, but only half of it is showing; the bottom half is cut off by the right end of the paper.
+
+I was able to get it in the proper orientation by using
+
+\includegraphics[angle=90]{diagram.pdf}
+
+But because the bottom half of it is cut off, I need some sort of option where I can do something like this:
+
+\includegraphics[angle=90, shift left = 5cm]{diagram.pdf}
+
+to pull the rest of the image left (or up, depending on how you're looking at it).
+
+So how can I move the figure around?
+I'm not sure if this is relevant, but I'm using the following documentclass and packages in my paper:
+
+\documentclass[11pt,a4paper,twoside]{article}
+\usepackage{tikz, graphicx}
+Edit:
+
+This is not an issue with pushing it past the margins. Half of the picture is not on the paper (sort of like if you stuck half of your left hand behind the left side of your monitor). I need to pull the paper left (just like you would shift your hand left to see it).
+tikz-pgf
+graphics
+include
+landscape
+share  improve this question   follow  
+edited Apr 8 '13 at 1:58
+asked Apr 7 '13 at 8:10
+
+TheRealFakeNews
+4,3071111 gold badges3333 silver badges4848 bronze badges
+have you tried to specify \includegraphics[width=1\textwidth, angle=90]{...}? – Holene Apr 7 '13 at 8:24 
+@Holene I tried it an it shrinks the image, even though all of it is there – TheRealFakeNews Apr 7 '13 at 8:30
+@KevinC Could you expand on that? I'm not even sure where in the manual I would be able to find that. – TheRealFakeNews Apr 7 '13 at 8:32
+1
+width = 1\textwidth will scale the input pdf such that it actually fits the page. I may misunderstand how your problem really looks like, but to me it sounds like you want to push the left side of the pdf past the page margins. In my opinion it's better to stay to the margins. Alternatively you could use the PDFpages package and include the entire PDF? – Holene Apr 7 '13 at 8:34 
+@AlanH: Sorry I was wrong about my previous suggestion. But how about this: \hspace{-<some number>in}\includegraphics[angel=90]{...}? Basically this shifts the included picture left by <some number> inch. – Herr K. Apr 7 '13 at 9:03 
+show 2 more comments
+3 Answers
+Active
+Oldest
+Votes
+ 
+61
+
+ \includegraphics makes a box that is positioned the same way \mbox{} or A are positioned. If you want to move it 3cm to the left use
+
+\hspace*{-3cm}\includegraphics.....
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:32
+
+David Carlisle
+584k5151 gold badges13231323 silver badges21132113 bronze badges
+8
+Sorry to interrupt; why use the starred version of \hspace? – Svend Tveskæg Apr 7 '13 at 9:35
+16
+@SvendTveskæg because if it is the beginning of a line white glue is discarded so white space and normal \hspace have no effect. – David Carlisle Apr 7 '13 at 9:39 
+add a comment
+ 
+30
+
+To include shifts directly in the options part of the \includegraphics[options]{graphic.pdf} part of the command, a more straight forward way is the
+
+`trim=left bottom right top` 
+option. Here, left, bottom, right, and top are units of length, which trim the graphic for positive values and add space for negative values.
+
+So to move to the right by 5cm and 1 cm from the top, you would do:
+
+\includegraphics[trim=-5cm 0 0 -1cm]{diagram.pdf}
+share  improve this answer   follow  
+answered Jul 15 '14 at 12:47
+
+littlemind
+40144 silver badges22 bronze badges
+6
+It is better so post complete working examples instead fragments of code – user31729 Jul 15 '14 at 12:54
+This worked for me. – polym May 13 '15 at 23:28
+Does the trick, even though I find the parameter name to be misleading (I associate "trimming" with "cropping" instead of "offsetting"). – Waldir Leoncio May 11 '18 at 11:46
+This works especially well with figures that have some trailing whitespace preventing any accurate automatic centering! If you trim the whitespace, automatic centering with \includegraphics[width=\linewidth] works again. – bhnn Oct 7 '18 at 17:31 
+add a comment
+ 
+7
+
+Opting for an answer as the comments with a lot of code have pretty low readability. The ninja pic is taken from http://tinyurl.com/btapmmx
+
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\begin{document}
+\begin{figure}
+\begin{tikzpicture}
+    \begin{scope}
+    \node {Node 1: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+    \begin{scope}[xshift=-5cm]
+    \node {Node 2: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+\end{tikzpicture}
+\end{figure}
+\end{document}
+Node 2 is now shifted, so if you skip the code for the scopes and node 1, and include your pdf in node 2 you should be able to shift the included pdf here and there.
+
+The result: enter image description here
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:12
+
+Holene
+6,38044 gold badges3131 silver badges6464 bronze badges
+Hmm, does the xshift option only work when there are two scopes? I was trying with only one scope, and the xshift option wasn't doing anything... – Herr K. Apr 7 '13 at 9:16
+1
+@KevinC No, you can simply do: \begin{tikzpicture}[xshift=-5cm] \node{node content}; \end{tikzpicture}. I added the two scopes just to illustrate the difference with and without xshift =) It works fine for me using only one scope too. – Holene Apr 7 '13 at 9:17 
+@Holene Okay, I think it's because the picture I'm importing has a slight margin, so I need to pull it past the margin in my article, which is why nothing was shifting for me, it's already pulled to the margin of the article. If I rescale it, which I tried, the picture doesn't look right. – TheRealFakeNews Apr 7 '13 at 9:19
+Have you tried adding the .tex source file in a figure environment instead of the compiled pdf, e.g. \input{source_file.tex}. I think you'll have to fix the orientation etc. in the .tex file though. – Holene Apr 7 '13 at 9:21
+@Holene: I did exactly what you said there... Perhaps it's my home computer's fault (I haven't updated my MikTeX for ages). – Herr K. Apr 7 '13 at 9:22
+show 1 more comment
+Your Answer
+
+
+Sign up or log in
+ Sign up using Google
+ Sign up using Facebook
+ Sign up using Email and Password
+Post as a guest
+Name
+
+Email
+Required, but never shown
+
+Post Your Answer
+By clicking “Post Your Answer”, you agree to our terms of service, privacy policy and cookie policy
+
+Not the answer you're looking for? Browse other questions tagged tikz-pgf graphics include landscape or ask your own question.
+
+The Overflow Blog
+The semantic future of the web
+Podcast 294: Cleaning up build systems and gathering computer history
+Featured on Meta
+New Feature: Table Support
+Linked
+
+0
+Shift an image horizontally
+8
+Positioning includegraphics vertically on a line?
+3
+Add extra space at the bottom with a rectangle containing an image, TikZ
+1
+moving figure to the right
+1
+How to move includegraphics
+Related
+
+2
+Problems with alignment with landscape table
+11
+graphics - dynamic image placement
+150
+Placeholder for figure/includegraphics
+4
+How to change font size in graphics included with \includegraphics
+0
+How can I change graphics with timeout in a beamer?
+5
+Is there any way to shift two \includegraphics images? Having trouble with \begin{figure}
+8
+Imposition for an 8 page booklet using pgfpages
+0
+How to use \includegraphics with package graphics?
+2
+Package-Conflict booklet and graphicx?
+1
+Arrow between BTrees
+Hot Network Questions
+
+Calculating parking fees, given start and end timestamps
+What does the crash early concept mean?
+Where can I travel to receive a COVID vaccine as a tourist?
+What is an idiom for "a supervening act that renders a course of action unnecessary"?
+Given a legal chess position, is there an algorithm that gets a series of moves that lead to it?
+How to gzip 100 GB files faster with high compression
+Email server certificate valid according to CheckTLS, invalid according to Thunderbird
+Why isn't the Sad Clown's torso in Stud.io?
+Why it is important to write a function as sum of even and odd functions?
+"Factorise" a quadratic
+Uniqueness of infinite direct sum decomposition
+I don't understand the bottom number in a time signature
+Scramble a Megaminx!
+How could a 6-way, zero-G, space constrained, 3D, flying car intersection work?
+Why would a company prevent their employees from selling their pre-IPO equity?
+What is the Schäffer Clef?
+I'm piece of cake. Anti-me can be fatal
+How to plot an array of lines?
+How to view annotated powerpoint presentations in Ubuntu?
+Effects of being hit by an object going at FTL speeds
+Guitarist and Bassist as only Bandmembers - Rhythmsection?
+Reviewing article and bad-faith citation
+Does the Qiskit ADMM optimizer really run on quantum computers?
+Mimic the X11 Primary selection
+ Question feed
+
+TEX - LATEX
+
+Tour
+Help
+Chat
+Contact
+Feedback
+Mobile
+Disable Responsiveness
+COMPANY
+
+Stack Overflow
+For Teams
+Advertise With Us
+Hire a Developer
+Developer Jobs
+About
+Press
+Legal
+Privacy Policy
+STACK EXCHANGE
+NETWORK
+
+Technology
+Life / Arts
+Culture / Recreation
+Science
+Other
+Blog
+Facebook
+Twitter
+LinkedIn
+Instagram
+site design / logo © 2020 Stack Exchange Inc; user contributions licensed under cc by-sa. rev 2020.12.10.38158
+
+ 
+Log in Sign up
+By using our site, you acknowledge that you have read and understand our Cookie Policy, Privacy Policy, and our Terms of Service.
+TeX - LaTeX Stack Exchange is a question and answer site for users of TeX, LaTeX, ConTeXt, and related typesetting systems. It only takes a minute to sign up.
+
+Sign up to join this community
+
+Anybody can ask a question
+
+Anybody can answer
+
+The best answers are voted up and rise to the top
+
+TeX - LaTeX
+Home
+Questions
+Tags
+Users
+Unanswered
+Jobs
+How to shift graphics/adjust placement of figure with \includegraphics
+Ask Question
+Asked 7 years, 8 months ago
+Active 6 years, 5 months ago
+Viewed 131k times
+
+40
+
+
+23
+I composed a diagram that takes up the entire sheet of paper in landscape mode, called diagram.tex (compiled it to generate pdf). I'm trying to include that into an article, but only half of it is showing; the bottom half is cut off by the right end of the paper.
+
+I was able to get it in the proper orientation by using
+
+\includegraphics[angle=90]{diagram.pdf}
+
+But because the bottom half of it is cut off, I need some sort of option where I can do something like this:
+
+\includegraphics[angle=90, shift left = 5cm]{diagram.pdf}
+
+to pull the rest of the image left (or up, depending on how you're looking at it).
+
+So how can I move the figure around?
+I'm not sure if this is relevant, but I'm using the following documentclass and packages in my paper:
+
+\documentclass[11pt,a4paper,twoside]{article}
+\usepackage{tikz, graphicx}
+Edit:
+
+This is not an issue with pushing it past the margins. Half of the picture is not on the paper (sort of like if you stuck half of your left hand behind the left side of your monitor). I need to pull the paper left (just like you would shift your hand left to see it).
+tikz-pgf
+graphics
+include
+landscape
+share  improve this question   follow  
+edited Apr 8 '13 at 1:58
+asked Apr 7 '13 at 8:10
+
+TheRealFakeNews
+4,3071111 gold badges3333 silver badges4848 bronze badges
+have you tried to specify \includegraphics[width=1\textwidth, angle=90]{...}? – Holene Apr 7 '13 at 8:24 
+@Holene I tried it an it shrinks the image, even though all of it is there – TheRealFakeNews Apr 7 '13 at 8:30
+@KevinC Could you expand on that? I'm not even sure where in the manual I would be able to find that. – TheRealFakeNews Apr 7 '13 at 8:32
+1
+width = 1\textwidth will scale the input pdf such that it actually fits the page. I may misunderstand how your problem really looks like, but to me it sounds like you want to push the left side of the pdf past the page margins. In my opinion it's better to stay to the margins. Alternatively you could use the PDFpages package and include the entire PDF? – Holene Apr 7 '13 at 8:34 
+@AlanH: Sorry I was wrong about my previous suggestion. But how about this: \hspace{-<some number>in}\includegraphics[angel=90]{...}? Basically this shifts the included picture left by <some number> inch. – Herr K. Apr 7 '13 at 9:03 
+show 2 more comments
+3 Answers
+Active
+Oldest
+Votes
+ 
+61
+
+ \includegraphics makes a box that is positioned the same way \mbox{} or A are positioned. If you want to move it 3cm to the left use
+
+\hspace*{-3cm}\includegraphics.....
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:32
+
+David Carlisle
+584k5151 gold badges13231323 silver badges21132113 bronze badges
+8
+Sorry to interrupt; why use the starred version of \hspace? – Svend Tveskæg Apr 7 '13 at 9:35
+16
+@SvendTveskæg because if it is the beginning of a line white glue is discarded so white space and normal \hspace have no effect. – David Carlisle Apr 7 '13 at 9:39 
+add a comment
+ 
+30
+
+To include shifts directly in the options part of the \includegraphics[options]{graphic.pdf} part of the command, a more straight forward way is the
+
+`trim=left bottom right top` 
+option. Here, left, bottom, right, and top are units of length, which trim the graphic for positive values and add space for negative values.
+
+So to move to the right by 5cm and 1 cm from the top, you would do:
+
+\includegraphics[trim=-5cm 0 0 -1cm]{diagram.pdf}
+share  improve this answer   follow  
+answered Jul 15 '14 at 12:47
+
+littlemind
+40144 silver badges22 bronze badges
+6
+It is better so post complete working examples instead fragments of code – user31729 Jul 15 '14 at 12:54
+This worked for me. – polym May 13 '15 at 23:28
+Does the trick, even though I find the parameter name to be misleading (I associate "trimming" with "cropping" instead of "offsetting"). – Waldir Leoncio May 11 '18 at 11:46
+This works especially well with figures that have some trailing whitespace preventing any accurate automatic centering! If you trim the whitespace, automatic centering with \includegraphics[width=\linewidth] works again. – bhnn Oct 7 '18 at 17:31 
+add a comment
+ 
+7
+
+Opting for an answer as the comments with a lot of code have pretty low readability. The ninja pic is taken from http://tinyurl.com/btapmmx
+
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\begin{document}
+\begin{figure}
+\begin{tikzpicture}
+    \begin{scope}
+    \node {Node 1: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+    \begin{scope}[xshift=-5cm]
+    \node {Node 2: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+\end{tikzpicture}
+\end{figure}
+\end{document}
+Node 2 is now shifted, so if you skip the code for the scopes and node 1, and include your pdf in node 2 you should be able to shift the included pdf here and there.
+
+The result: enter image description here
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:12
+
+Holene
+6,38044 gold badges3131 silver badges6464 bronze badges
+Hmm, does the xshift option only work when there are two scopes? I was trying with only one scope, and the xshift option wasn't doing anything... – Herr K. Apr 7 '13 at 9:16
+1
+@KevinC No, you can simply do: \begin{tikzpicture}[xshift=-5cm] \node{node content}; \end{tikzpicture}. I added the two scopes just to illustrate the difference with and without xshift =) It works fine for me using only one scope too. – Holene Apr 7 '13 at 9:17 
+@Holene Okay, I think it's because the picture I'm importing has a slight margin, so I need to pull it past the margin in my article, which is why nothing was shifting for me, it's already pulled to the margin of the article. If I rescale it, which I tried, the picture doesn't look right. – TheRealFakeNews Apr 7 '13 at 9:19
+Have you tried adding the .tex source file in a figure environment instead of the compiled pdf, e.g. \input{source_file.tex}. I think you'll have to fix the orientation etc. in the .tex file though. – Holene Apr 7 '13 at 9:21
+@Holene: I did exactly what you said there... Perhaps it's my home computer's fault (I haven't updated my MikTeX for ages). – Herr K. Apr 7 '13 at 9:22
+show 1 more comment
+Your Answer
+
+
+Sign up or log in
+ Sign up using Google
+ Sign up using Facebook
+ Sign up using Email and Password
+Post as a guest
+Name
+
+Email
+Required, but never shown
+
+Post Your Answer
+By clicking “Post Your Answer”, you agree to our terms of service, privacy policy and cookie policy
+
+Not the answer you're looking for? Browse other questions tagged tikz-pgf graphics include landscape or ask your own question.
+
+The Overflow Blog
+The semantic future of the web
+Podcast 294: Cleaning up build systems and gathering computer history
+Featured on Meta
+New Feature: Table Support
+Linked
+
+0
+Shift an image horizontally
+8
+Positioning includegraphics vertically on a line?
+3
+Add extra space at the bottom with a rectangle containing an image, TikZ
+1
+moving figure to the right
+1
+How to move includegraphics
+Related
+
+2
+Problems with alignment with landscape table
+11
+graphics - dynamic image placement
+150
+Placeholder for figure/includegraphics
+4
+How to change font size in graphics included with \includegraphics
+0
+How can I change graphics with timeout in a beamer?
+5
+Is there any way to shift two \includegraphics images? Having trouble with \begin{figure}
+8
+Imposition for an 8 page booklet using pgfpages
+0
+How to use \includegraphics with package graphics?
+2
+Package-Conflict booklet and graphicx?
+1
+Arrow between BTrees
+Hot Network Questions
+
+Calculating parking fees, given start and end timestamps
+What does the crash early concept mean?
+Where can I travel to receive a COVID vaccine as a tourist?
+What is an idiom for "a supervening act that renders a course of action unnecessary"?
+Given a legal chess position, is there an algorithm that gets a series of moves that lead to it?
+How to gzip 100 GB files faster with high compression
+Email server certificate valid according to CheckTLS, invalid according to Thunderbird
+Why isn't the Sad Clown's torso in Stud.io?
+Why it is important to write a function as sum of even and odd functions?
+"Factorise" a quadratic
+Uniqueness of infinite direct sum decomposition
+I don't understand the bottom number in a time signature
+Scramble a Megaminx!
+How could a 6-way, zero-G, space constrained, 3D, flying car intersection work?
+Why would a company prevent their employees from selling their pre-IPO equity?
+What is the Schäffer Clef?
+I'm piece of cake. Anti-me can be fatal
+How to plot an array of lines?
+How to view annotated powerpoint presentations in Ubuntu?
+Effects of being hit by an object going at FTL speeds
+Guitarist and Bassist as only Bandmembers - Rhythmsection?
+Reviewing article and bad-faith citation
+Does the Qiskit ADMM optimizer really run on quantum computers?
+Mimic the X11 Primary selection
+ Question feed
+
+TEX - LATEX
+
+Tour
+Help
+Chat
+Contact
+Feedback
+Mobile
+Disable Responsiveness
+COMPANY
+
+Stack Overflow
+For Teams
+Advertise With Us
+Hire a Developer
+Developer Jobs
+About
+Press
+Legal
+Privacy Policy
+STACK EXCHANGE
+NETWORK
+
+Technology
+Life / Arts
+Culture / Recreation
+Science
+Other
+Blog
+Facebook
+Twitter
+LinkedIn
+Instagram
+site design / logo © 2020 Stack Exchange Inc; user contributions licensed under cc by-sa. rev 2020.12.10.38158
+
+ 
+Log in Sign up
+By using our site, you acknowledge that you have read and understand our Cookie Policy, Privacy Policy, and our Terms of Service.
+TeX - LaTeX Stack Exchange is a question and answer site for users of TeX, LaTeX, ConTeXt, and related typesetting systems. It only takes a minute to sign up.
+
+Sign up to join this community
+
+Anybody can ask a question
+
+Anybody can answer
+
+The best answers are voted up and rise to the top
+
+TeX - LaTeX
+Home
+Questions
+Tags
+Users
+Unanswered
+Jobs
+How to shift graphics/adjust placement of figure with \includegraphics
+Ask Question
+Asked 7 years, 8 months ago
+Active 6 years, 5 months ago
+Viewed 131k times
+
+40
+
+
+23
+I composed a diagram that takes up the entire sheet of paper in landscape mode, called diagram.tex (compiled it to generate pdf). I'm trying to include that into an article, but only half of it is showing; the bottom half is cut off by the right end of the paper.
+
+I was able to get it in the proper orientation by using
+
+\includegraphics[angle=90]{diagram.pdf}
+
+But because the bottom half of it is cut off, I need some sort of option where I can do something like this:
+
+\includegraphics[angle=90, shift left = 5cm]{diagram.pdf}
+
+to pull the rest of the image left (or up, depending on how you're looking at it).
+
+So how can I move the figure around?
+I'm not sure if this is relevant, but I'm using the following documentclass and packages in my paper:
+
+\documentclass[11pt,a4paper,twoside]{article}
+\usepackage{tikz, graphicx}
+Edit:
+
+This is not an issue with pushing it past the margins. Half of the picture is not on the paper (sort of like if you stuck half of your left hand behind the left side of your monitor). I need to pull the paper left (just like you would shift your hand left to see it).
+tikz-pgf
+graphics
+include
+landscape
+share  improve this question   follow  
+edited Apr 8 '13 at 1:58
+asked Apr 7 '13 at 8:10
+
+TheRealFakeNews
+4,3071111 gold badges3333 silver badges4848 bronze badges
+have you tried to specify \includegraphics[width=1\textwidth, angle=90]{...}? – Holene Apr 7 '13 at 8:24 
+@Holene I tried it an it shrinks the image, even though all of it is there – TheRealFakeNews Apr 7 '13 at 8:30
+@KevinC Could you expand on that? I'm not even sure where in the manual I would be able to find that. – TheRealFakeNews Apr 7 '13 at 8:32
+1
+width = 1\textwidth will scale the input pdf such that it actually fits the page. I may misunderstand how your problem really looks like, but to me it sounds like you want to push the left side of the pdf past the page margins. In my opinion it's better to stay to the margins. Alternatively you could use the PDFpages package and include the entire PDF? – Holene Apr 7 '13 at 8:34 
+@AlanH: Sorry I was wrong about my previous suggestion. But how about this: \hspace{-<some number>in}\includegraphics[angel=90]{...}? Basically this shifts the included picture left by <some number> inch. – Herr K. Apr 7 '13 at 9:03 
+show 2 more comments
+3 Answers
+Active
+Oldest
+Votes
+ 
+61
+
+ \includegraphics makes a box that is positioned the same way \mbox{} or A are positioned. If you want to move it 3cm to the left use
+
+\hspace*{-3cm}\includegraphics.....
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:32
+
+David Carlisle
+584k5151 gold badges13231323 silver badges21132113 bronze badges
+8
+Sorry to interrupt; why use the starred version of \hspace? – Svend Tveskæg Apr 7 '13 at 9:35
+16
+@SvendTveskæg because if it is the beginning of a line white glue is discarded so white space and normal \hspace have no effect. – David Carlisle Apr 7 '13 at 9:39 
+add a comment
+ 
+30
+
+To include shifts directly in the options part of the \includegraphics[options]{graphic.pdf} part of the command, a more straight forward way is the
+
+`trim=left bottom right top` 
+option. Here, left, bottom, right, and top are units of length, which trim the graphic for positive values and add space for negative values.
+
+So to move to the right by 5cm and 1 cm from the top, you would do:
+
+\includegraphics[trim=-5cm 0 0 -1cm]{diagram.pdf}
+share  improve this answer   follow  
+answered Jul 15 '14 at 12:47
+
+littlemind
+40144 silver badges22 bronze badges
+6
+It is better so post complete working examples instead fragments of code – user31729 Jul 15 '14 at 12:54
+This worked for me. – polym May 13 '15 at 23:28
+Does the trick, even though I find the parameter name to be misleading (I associate "trimming" with "cropping" instead of "offsetting"). – Waldir Leoncio May 11 '18 at 11:46
+This works especially well with figures that have some trailing whitespace preventing any accurate automatic centering! If you trim the whitespace, automatic centering with \includegraphics[width=\linewidth] works again. – bhnn Oct 7 '18 at 17:31 
+add a comment
+ 
+7
+
+Opting for an answer as the comments with a lot of code have pretty low readability. The ninja pic is taken from http://tinyurl.com/btapmmx
+
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\begin{document}
+\begin{figure}
+\begin{tikzpicture}
+    \begin{scope}
+    \node {Node 1: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+    \begin{scope}[xshift=-5cm]
+    \node {Node 2: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+\end{tikzpicture}
+\end{figure}
+\end{document}
+Node 2 is now shifted, so if you skip the code for the scopes and node 1, and include your pdf in node 2 you should be able to shift the included pdf here and there.
+
+The result: enter image description here
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:12
+
+Holene
+6,38044 gold badges3131 silver badges6464 bronze badges
+Hmm, does the xshift option only work when there are two scopes? I was trying with only one scope, and the xshift option wasn't doing anything... – Herr K. Apr 7 '13 at 9:16
+1
+@KevinC No, you can simply do: \begin{tikzpicture}[xshift=-5cm] \node{node content}; \end{tikzpicture}. I added the two scopes just to illustrate the difference with and without xshift =) It works fine for me using only one scope too. – Holene Apr 7 '13 at 9:17 
+@Holene Okay, I think it's because the picture I'm importing has a slight margin, so I need to pull it past the margin in my article, which is why nothing was shifting for me, it's already pulled to the margin of the article. If I rescale it, which I tried, the picture doesn't look right. – TheRealFakeNews Apr 7 '13 at 9:19
+Have you tried adding the .tex source file in a figure environment instead of the compiled pdf, e.g. \input{source_file.tex}. I think you'll have to fix the orientation etc. in the .tex file though. – Holene Apr 7 '13 at 9:21
+@Holene: I did exactly what you said there... Perhaps it's my home computer's fault (I haven't updated my MikTeX for ages). – Herr K. Apr 7 '13 at 9:22
+show 1 more comment
+Your Answer
+
+
+Sign up or log in
+ Sign up using Google
+ Sign up using Facebook
+ Sign up using Email and Password
+Post as a guest
+Name
+
+Email
+Required, but never shown
+
+Post Your Answer
+By clicking “Post Your Answer”, you agree to our terms of service, privacy policy and cookie policy
+
+Not the answer you're looking for? Browse other questions tagged tikz-pgf graphics include landscape or ask your own question.
+
+The Overflow Blog
+The semantic future of the web
+Podcast 294: Cleaning up build systems and gathering computer history
+Featured on Meta
+New Feature: Table Support
+Linked
+
+0
+Shift an image horizontally
+8
+Positioning includegraphics vertically on a line?
+3
+Add extra space at the bottom with a rectangle containing an image, TikZ
+1
+moving figure to the right
+1
+How to move includegraphics
+Related
+
+2
+Problems with alignment with landscape table
+11
+graphics - dynamic image placement
+150
+Placeholder for figure/includegraphics
+4
+How to change font size in graphics included with \includegraphics
+0
+How can I change graphics with timeout in a beamer?
+5
+Is there any way to shift two \includegraphics images? Having trouble with \begin{figure}
+8
+Imposition for an 8 page booklet using pgfpages
+0
+How to use \includegraphics with package graphics?
+2
+Package-Conflict booklet and graphicx?
+1
+Arrow between BTrees
+Hot Network Questions
+
+Calculating parking fees, given start and end timestamps
+What does the crash early concept mean?
+Where can I travel to receive a COVID vaccine as a tourist?
+What is an idiom for "a supervening act that renders a course of action unnecessary"?
+Given a legal chess position, is there an algorithm that gets a series of moves that lead to it?
+How to gzip 100 GB files faster with high compression
+Email server certificate valid according to CheckTLS, invalid according to Thunderbird
+Why isn't the Sad Clown's torso in Stud.io?
+Why it is important to write a function as sum of even and odd functions?
+"Factorise" a quadratic
+Uniqueness of infinite direct sum decomposition
+I don't understand the bottom number in a time signature
+Scramble a Megaminx!
+How could a 6-way, zero-G, space constrained, 3D, flying car intersection work?
+Why would a company prevent their employees from selling their pre-IPO equity?
+What is the Schäffer Clef?
+I'm piece of cake. Anti-me can be fatal
+How to plot an array of lines?
+How to view annotated powerpoint presentations in Ubuntu?
+Effects of being hit by an object going at FTL speeds
+Guitarist and Bassist as only Bandmembers - Rhythmsection?
+Reviewing article and bad-faith citation
+Does the Qiskit ADMM optimizer really run on quantum computers?
+Mimic the X11 Primary selection
+ Question feed
+
+TEX - LATEX
+
+Tour
+Help
+Chat
+Contact
+Feedback
+Mobile
+Disable Responsiveness
+COMPANY
+
+Stack Overflow
+For Teams
+Advertise With Us
+Hire a Developer
+Developer Jobs
+About
+Press
+Legal
+Privacy Policy
+STACK EXCHANGE
+NETWORK
+
+Technology
+Life / Arts
+Culture / Recreation
+Science
+Other
+Blog
+Facebook
+Twitter
+LinkedIn
+Instagram
+site design / logo © 2020 Stack Exchange Inc; user contributions licensed under cc by-sa. rev 2020.12.10.38158
+
+ 
+Log in Sign up
+By using our site, you acknowledge that you have read and understand our Cookie Policy, Privacy Policy, and our Terms of Service.
+TeX - LaTeX Stack Exchange is a question and answer site for users of TeX, LaTeX, ConTeXt, and related typesetting systems. It only takes a minute to sign up.
+
+Sign up to join this community
+
+Anybody can ask a question
+
+Anybody can answer
+
+The best answers are voted up and rise to the top
+
+TeX - LaTeX
+Home
+Questions
+Tags
+Users
+Unanswered
+Jobs
+How to shift graphics/adjust placement of figure with \includegraphics
+Ask Question
+Asked 7 years, 8 months ago
+Active 6 years, 5 months ago
+Viewed 131k times
+
+40
+
+
+23
+I composed a diagram that takes up the entire sheet of paper in landscape mode, called diagram.tex (compiled it to generate pdf). I'm trying to include that into an article, but only half of it is showing; the bottom half is cut off by the right end of the paper.
+
+I was able to get it in the proper orientation by using
+
+\includegraphics[angle=90]{diagram.pdf}
+
+But because the bottom half of it is cut off, I need some sort of option where I can do something like this:
+
+\includegraphics[angle=90, shift left = 5cm]{diagram.pdf}
+
+to pull the rest of the image left (or up, depending on how you're looking at it).
+
+So how can I move the figure around?
+I'm not sure if this is relevant, but I'm using the following documentclass and packages in my paper:
+
+\documentclass[11pt,a4paper,twoside]{article}
+\usepackage{tikz, graphicx}
+Edit:
+
+This is not an issue with pushing it past the margins. Half of the picture is not on the paper (sort of like if you stuck half of your left hand behind the left side of your monitor). I need to pull the paper left (just like you would shift your hand left to see it).
+tikz-pgf
+graphics
+include
+landscape
+share  improve this question   follow  
+edited Apr 8 '13 at 1:58
+asked Apr 7 '13 at 8:10
+
+TheRealFakeNews
+4,3071111 gold badges3333 silver badges4848 bronze badges
+have you tried to specify \includegraphics[width=1\textwidth, angle=90]{...}? – Holene Apr 7 '13 at 8:24 
+@Holene I tried it an it shrinks the image, even though all of it is there – TheRealFakeNews Apr 7 '13 at 8:30
+@KevinC Could you expand on that? I'm not even sure where in the manual I would be able to find that. – TheRealFakeNews Apr 7 '13 at 8:32
+1
+width = 1\textwidth will scale the input pdf such that it actually fits the page. I may misunderstand how your problem really looks like, but to me it sounds like you want to push the left side of the pdf past the page margins. In my opinion it's better to stay to the margins. Alternatively you could use the PDFpages package and include the entire PDF? – Holene Apr 7 '13 at 8:34 
+@AlanH: Sorry I was wrong about my previous suggestion. But how about this: \hspace{-<some number>in}\includegraphics[angel=90]{...}? Basically this shifts the included picture left by <some number> inch. – Herr K. Apr 7 '13 at 9:03 
+show 2 more comments
+3 Answers
+Active
+Oldest
+Votes
+ 
+61
+
+ \includegraphics makes a box that is positioned the same way \mbox{} or A are positioned. If you want to move it 3cm to the left use
+
+\hspace*{-3cm}\includegraphics.....
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:32
+
+David Carlisle
+584k5151 gold badges13231323 silver badges21132113 bronze badges
+8
+Sorry to interrupt; why use the starred version of \hspace? – Svend Tveskæg Apr 7 '13 at 9:35
+16
+@SvendTveskæg because if it is the beginning of a line white glue is discarded so white space and normal \hspace have no effect. – David Carlisle Apr 7 '13 at 9:39 
+add a comment
+ 
+30
+
+To include shifts directly in the options part of the \includegraphics[options]{graphic.pdf} part of the command, a more straight forward way is the
+
+`trim=left bottom right top` 
+option. Here, left, bottom, right, and top are units of length, which trim the graphic for positive values and add space for negative values.
+
+So to move to the right by 5cm and 1 cm from the top, you would do:
+
+\includegraphics[trim=-5cm 0 0 -1cm]{diagram.pdf}
+share  improve this answer   follow  
+answered Jul 15 '14 at 12:47
+
+littlemind
+40144 silver badges22 bronze badges
+6
+It is better so post complete working examples instead fragments of code – user31729 Jul 15 '14 at 12:54
+This worked for me. – polym May 13 '15 at 23:28
+Does the trick, even though I find the parameter name to be misleading (I associate "trimming" with "cropping" instead of "offsetting"). – Waldir Leoncio May 11 '18 at 11:46
+This works especially well with figures that have some trailing whitespace preventing any accurate automatic centering! If you trim the whitespace, automatic centering with \includegraphics[width=\linewidth] works again. – bhnn Oct 7 '18 at 17:31 
+add a comment
+ 
+7
+
+Opting for an answer as the comments with a lot of code have pretty low readability. The ninja pic is taken from http://tinyurl.com/btapmmx
+
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\begin{document}
+\begin{figure}
+\begin{tikzpicture}
+    \begin{scope}
+    \node {Node 1: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+    \begin{scope}[xshift=-5cm]
+    \node {Node 2: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+\end{tikzpicture}
+\end{figure}
+\end{document}
+Node 2 is now shifted, so if you skip the code for the scopes and node 1, and include your pdf in node 2 you should be able to shift the included pdf here and there.
+
+The result: enter image description here
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:12
+
+Holene
+6,38044 gold badges3131 silver badges6464 bronze badges
+Hmm, does the xshift option only work when there are two scopes? I was trying with only one scope, and the xshift option wasn't doing anything... – Herr K. Apr 7 '13 at 9:16
+1
+@KevinC No, you can simply do: \begin{tikzpicture}[xshift=-5cm] \node{node content}; \end{tikzpicture}. I added the two scopes just to illustrate the difference with and without xshift =) It works fine for me using only one scope too. – Holene Apr 7 '13 at 9:17 
+@Holene Okay, I think it's because the picture I'm importing has a slight margin, so I need to pull it past the margin in my article, which is why nothing was shifting for me, it's already pulled to the margin of the article. If I rescale it, which I tried, the picture doesn't look right. – TheRealFakeNews Apr 7 '13 at 9:19
+Have you tried adding the .tex source file in a figure environment instead of the compiled pdf, e.g. \input{source_file.tex}. I think you'll have to fix the orientation etc. in the .tex file though. – Holene Apr 7 '13 at 9:21
+@Holene: I did exactly what you said there... Perhaps it's my home computer's fault (I haven't updated my MikTeX for ages). – Herr K. Apr 7 '13 at 9:22
+show 1 more comment
+Your Answer
+
+
+Sign up or log in
+ Sign up using Google
+ Sign up using Facebook
+ Sign up using Email and Password
+Post as a guest
+Name
+
+Email
+Required, but never shown
+
+Post Your Answer
+By clicking “Post Your Answer”, you agree to our terms of service, privacy policy and cookie policy
+
+Not the answer you're looking for? Browse other questions tagged tikz-pgf graphics include landscape or ask your own question.
+
+The Overflow Blog
+The semantic future of the web
+Podcast 294: Cleaning up build systems and gathering computer history
+Featured on Meta
+New Feature: Table Support
+Linked
+
+0
+Shift an image horizontally
+8
+Positioning includegraphics vertically on a line?
+3
+Add extra space at the bottom with a rectangle containing an image, TikZ
+1
+moving figure to the right
+1
+How to move includegraphics
+Related
+
+2
+Problems with alignment with landscape table
+11
+graphics - dynamic image placement
+150
+Placeholder for figure/includegraphics
+4
+How to change font size in graphics included with \includegraphics
+0
+How can I change graphics with timeout in a beamer?
+5
+Is there any way to shift two \includegraphics images? Having trouble with \begin{figure}
+8
+Imposition for an 8 page booklet using pgfpages
+0
+How to use \includegraphics with package graphics?
+2
+Package-Conflict booklet and graphicx?
+1
+Arrow between BTrees
+Hot Network Questions
+
+Calculating parking fees, given start and end timestamps
+What does the crash early concept mean?
+Where can I travel to receive a COVID vaccine as a tourist?
+What is an idiom for "a supervening act that renders a course of action unnecessary"?
+Given a legal chess position, is there an algorithm that gets a series of moves that lead to it?
+How to gzip 100 GB files faster with high compression
+Email server certificate valid according to CheckTLS, invalid according to Thunderbird
+Why isn't the Sad Clown's torso in Stud.io?
+Why it is important to write a function as sum of even and odd functions?
+"Factorise" a quadratic
+Uniqueness of infinite direct sum decomposition
+I don't understand the bottom number in a time signature
+Scramble a Megaminx!
+How could a 6-way, zero-G, space constrained, 3D, flying car intersection work?
+Why would a company prevent their employees from selling their pre-IPO equity?
+What is the Schäffer Clef?
+I'm piece of cake. Anti-me can be fatal
+How to plot an array of lines?
+How to view annotated powerpoint presentations in Ubuntu?
+Effects of being hit by an object going at FTL speeds
+Guitarist and Bassist as only Bandmembers - Rhythmsection?
+Reviewing article and bad-faith citation
+Does the Qiskit ADMM optimizer really run on quantum computers?
+Mimic the X11 Primary selection
+ Question feed
+
+TEX - LATEX
+
+Tour
+Help
+Chat
+Contact
+Feedback
+Mobile
+Disable Responsiveness
+COMPANY
+
+Stack Overflow
+For Teams
+Advertise With Us
+Hire a Developer
+Developer Jobs
+About
+Press
+Legal
+Privacy Policy
+STACK EXCHANGE
+NETWORK
+
+Technology
+Life / Arts
+Culture / Recreation
+Science
+Other
+Blog
+Facebook
+Twitter
+LinkedIn
+Instagram
+site design / logo © 2020 Stack Exchange Inc; user contributions licensed under cc by-sa. rev 2020.12.10.38158
+
+ 
+Log in Sign up
+By using our site, you acknowledge that you have read and understand our Cookie Policy, Privacy Policy, and our Terms of Service.
+TeX - LaTeX Stack Exchange is a question and answer site for users of TeX, LaTeX, ConTeXt, and related typesetting systems. It only takes a minute to sign up.
+
+Sign up to join this community
+
+Anybody can ask a question
+
+Anybody can answer
+
+The best answers are voted up and rise to the top
+
+TeX - LaTeX
+Home
+Questions
+Tags
+Users
+Unanswered
+Jobs
+How to shift graphics/adjust placement of figure with \includegraphics
+Ask Question
+Asked 7 years, 8 months ago
+Active 6 years, 5 months ago
+Viewed 131k times
+
+40
+
+
+23
+I composed a diagram that takes up the entire sheet of paper in landscape mode, called diagram.tex (compiled it to generate pdf). I'm trying to include that into an article, but only half of it is showing; the bottom half is cut off by the right end of the paper.
+
+I was able to get it in the proper orientation by using
+
+\includegraphics[angle=90]{diagram.pdf}
+
+But because the bottom half of it is cut off, I need some sort of option where I can do something like this:
+
+\includegraphics[angle=90, shift left = 5cm]{diagram.pdf}
+
+to pull the rest of the image left (or up, depending on how you're looking at it).
+
+So how can I move the figure around?
+I'm not sure if this is relevant, but I'm using the following documentclass and packages in my paper:
+
+\documentclass[11pt,a4paper,twoside]{article}
+\usepackage{tikz, graphicx}
+Edit:
+
+This is not an issue with pushing it past the margins. Half of the picture is not on the paper (sort of like if you stuck half of your left hand behind the left side of your monitor). I need to pull the paper left (just like you would shift your hand left to see it).
+tikz-pgf
+graphics
+include
+landscape
+share  improve this question   follow  
+edited Apr 8 '13 at 1:58
+asked Apr 7 '13 at 8:10
+
+TheRealFakeNews
+4,3071111 gold badges3333 silver badges4848 bronze badges
+have you tried to specify \includegraphics[width=1\textwidth, angle=90]{...}? – Holene Apr 7 '13 at 8:24 
+@Holene I tried it an it shrinks the image, even though all of it is there – TheRealFakeNews Apr 7 '13 at 8:30
+@KevinC Could you expand on that? I'm not even sure where in the manual I would be able to find that. – TheRealFakeNews Apr 7 '13 at 8:32
+1
+width = 1\textwidth will scale the input pdf such that it actually fits the page. I may misunderstand how your problem really looks like, but to me it sounds like you want to push the left side of the pdf past the page margins. In my opinion it's better to stay to the margins. Alternatively you could use the PDFpages package and include the entire PDF? – Holene Apr 7 '13 at 8:34 
+@AlanH: Sorry I was wrong about my previous suggestion. But how about this: \hspace{-<some number>in}\includegraphics[angel=90]{...}? Basically this shifts the included picture left by <some number> inch. – Herr K. Apr 7 '13 at 9:03 
+show 2 more comments
+3 Answers
+Active
+Oldest
+Votes
+ 
+61
+
+ \includegraphics makes a box that is positioned the same way \mbox{} or A are positioned. If you want to move it 3cm to the left use
+
+\hspace*{-3cm}\includegraphics.....
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:32
+
+David Carlisle
+584k5151 gold badges13231323 silver badges21132113 bronze badges
+8
+Sorry to interrupt; why use the starred version of \hspace? – Svend Tveskæg Apr 7 '13 at 9:35
+16
+@SvendTveskæg because if it is the beginning of a line white glue is discarded so white space and normal \hspace have no effect. – David Carlisle Apr 7 '13 at 9:39 
+add a comment
+ 
+30
+
+To include shifts directly in the options part of the \includegraphics[options]{graphic.pdf} part of the command, a more straight forward way is the
+
+`trim=left bottom right top` 
+option. Here, left, bottom, right, and top are units of length, which trim the graphic for positive values and add space for negative values.
+
+So to move to the right by 5cm and 1 cm from the top, you would do:
+
+\includegraphics[trim=-5cm 0 0 -1cm]{diagram.pdf}
+share  improve this answer   follow  
+answered Jul 15 '14 at 12:47
+
+littlemind
+40144 silver badges22 bronze badges
+6
+It is better so post complete working examples instead fragments of code – user31729 Jul 15 '14 at 12:54
+This worked for me. – polym May 13 '15 at 23:28
+Does the trick, even though I find the parameter name to be misleading (I associate "trimming" with "cropping" instead of "offsetting"). – Waldir Leoncio May 11 '18 at 11:46
+This works especially well with figures that have some trailing whitespace preventing any accurate automatic centering! If you trim the whitespace, automatic centering with \includegraphics[width=\linewidth] works again. – bhnn Oct 7 '18 at 17:31 
+add a comment
+ 
+7
+
+Opting for an answer as the comments with a lot of code have pretty low readability. The ninja pic is taken from http://tinyurl.com/btapmmx
+
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\begin{document}
+\begin{figure}
+\begin{tikzpicture}
+    \begin{scope}
+    \node {Node 1: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+    \begin{scope}[xshift=-5cm]
+    \node {Node 2: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+\end{tikzpicture}
+\end{figure}
+\end{document}
+Node 2 is now shifted, so if you skip the code for the scopes and node 1, and include your pdf in node 2 you should be able to shift the included pdf here and there.
+
+The result: enter image description here
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:12
+
+Holene
+6,38044 gold badges3131 silver badges6464 bronze badges
+Hmm, does the xshift option only work when there are two scopes? I was trying with only one scope, and the xshift option wasn't doing anything... – Herr K. Apr 7 '13 at 9:16
+1
+@KevinC No, you can simply do: \begin{tikzpicture}[xshift=-5cm] \node{node content}; \end{tikzpicture}. I added the two scopes just to illustrate the difference with and without xshift =) It works fine for me using only one scope too. – Holene Apr 7 '13 at 9:17 
+@Holene Okay, I think it's because the picture I'm importing has a slight margin, so I need to pull it past the margin in my article, which is why nothing was shifting for me, it's already pulled to the margin of the article. If I rescale it, which I tried, the picture doesn't look right. – TheRealFakeNews Apr 7 '13 at 9:19
+Have you tried adding the .tex source file in a figure environment instead of the compiled pdf, e.g. \input{source_file.tex}. I think you'll have to fix the orientation etc. in the .tex file though. – Holene Apr 7 '13 at 9:21
+@Holene: I did exactly what you said there... Perhaps it's my home computer's fault (I haven't updated my MikTeX for ages). – Herr K. Apr 7 '13 at 9:22
+show 1 more comment
+Your Answer
+
+
+Sign up or log in
+ Sign up using Google
+ Sign up using Facebook
+ Sign up using Email and Password
+Post as a guest
+Name
+
+Email
+Required, but never shown
+
+Post Your Answer
+By clicking “Post Your Answer”, you agree to our terms of service, privacy policy and cookie policy
+
+Not the answer you're looking for? Browse other questions tagged tikz-pgf graphics include landscape or ask your own question.
+
+The Overflow Blog
+The semantic future of the web
+Podcast 294: Cleaning up build systems and gathering computer history
+Featured on Meta
+New Feature: Table Support
+Linked
+
+0
+Shift an image horizontally
+8
+Positioning includegraphics vertically on a line?
+3
+Add extra space at the bottom with a rectangle containing an image, TikZ
+1
+moving figure to the right
+1
+How to move includegraphics
+Related
+
+2
+Problems with alignment with landscape table
+11
+graphics - dynamic image placement
+150
+Placeholder for figure/includegraphics
+4
+How to change font size in graphics included with \includegraphics
+0
+How can I change graphics with timeout in a beamer?
+5
+Is there any way to shift two \includegraphics images? Having trouble with \begin{figure}
+8
+Imposition for an 8 page booklet using pgfpages
+0
+How to use \includegraphics with package graphics?
+2
+Package-Conflict booklet and graphicx?
+1
+Arrow between BTrees
+Hot Network Questions
+
+Calculating parking fees, given start and end timestamps
+What does the crash early concept mean?
+Where can I travel to receive a COVID vaccine as a tourist?
+What is an idiom for "a supervening act that renders a course of action unnecessary"?
+Given a legal chess position, is there an algorithm that gets a series of moves that lead to it?
+How to gzip 100 GB files faster with high compression
+Email server certificate valid according to CheckTLS, invalid according to Thunderbird
+Why isn't the Sad Clown's torso in Stud.io?
+Why it is important to write a function as sum of even and odd functions?
+"Factorise" a quadratic
+Uniqueness of infinite direct sum decomposition
+I don't understand the bottom number in a time signature
+Scramble a Megaminx!
+How could a 6-way, zero-G, space constrained, 3D, flying car intersection work?
+Why would a company prevent their employees from selling their pre-IPO equity?
+What is the Schäffer Clef?
+I'm piece of cake. Anti-me can be fatal
+How to plot an array of lines?
+How to view annotated powerpoint presentations in Ubuntu?
+Effects of being hit by an object going at FTL speeds
+Guitarist and Bassist as only Bandmembers - Rhythmsection?
+Reviewing article and bad-faith citation
+Does the Qiskit ADMM optimizer really run on quantum computers?
+Mimic the X11 Primary selection
+ Question feed
+
+TEX - LATEX
+
+Tour
+Help
+Chat
+Contact
+Feedback
+Mobile
+Disable Responsiveness
+COMPANY
+
+Stack Overflow
+For Teams
+Advertise With Us
+Hire a Developer
+Developer Jobs
+About
+Press
+Legal
+Privacy Policy
+STACK EXCHANGE
+NETWORK
+
+Technology
+Life / Arts
+Culture / Recreation
+Science
+Other
+Blog
+Facebook
+Twitter
+LinkedIn
+Instagram
+site design / logo © 2020 Stack Exchange Inc; user contributions licensed under cc by-sa. rev 2020.12.10.38158
+
+ 
+Log in Sign up
+By using our site, you acknowledge that you have read and understand our Cookie Policy, Privacy Policy, and our Terms of Service.
+TeX - LaTeX Stack Exchange is a question and answer site for users of TeX, LaTeX, ConTeXt, and related typesetting systems. It only takes a minute to sign up.
+
+Sign up to join this community
+
+Anybody can ask a question
+
+Anybody can answer
+
+The best answers are voted up and rise to the top
+
+TeX - LaTeX
+Home
+Questions
+Tags
+Users
+Unanswered
+Jobs
+How to shift graphics/adjust placement of figure with \includegraphics
+Ask Question
+Asked 7 years, 8 months ago
+Active 6 years, 5 months ago
+Viewed 131k times
+
+40
+
+
+23
+I composed a diagram that takes up the entire sheet of paper in landscape mode, called diagram.tex (compiled it to generate pdf). I'm trying to include that into an article, but only half of it is showing; the bottom half is cut off by the right end of the paper.
+
+I was able to get it in the proper orientation by using
+
+\includegraphics[angle=90]{diagram.pdf}
+
+But because the bottom half of it is cut off, I need some sort of option where I can do something like this:
+
+\includegraphics[angle=90, shift left = 5cm]{diagram.pdf}
+
+to pull the rest of the image left (or up, depending on how you're looking at it).
+
+So how can I move the figure around?
+I'm not sure if this is relevant, but I'm using the following documentclass and packages in my paper:
+
+\documentclass[11pt,a4paper,twoside]{article}
+\usepackage{tikz, graphicx}
+Edit:
+
+This is not an issue with pushing it past the margins. Half of the picture is not on the paper (sort of like if you stuck half of your left hand behind the left side of your monitor). I need to pull the paper left (just like you would shift your hand left to see it).
+tikz-pgf
+graphics
+include
+landscape
+share  improve this question   follow  
+edited Apr 8 '13 at 1:58
+asked Apr 7 '13 at 8:10
+
+TheRealFakeNews
+4,3071111 gold badges3333 silver badges4848 bronze badges
+have you tried to specify \includegraphics[width=1\textwidth, angle=90]{...}? – Holene Apr 7 '13 at 8:24 
+@Holene I tried it an it shrinks the image, even though all of it is there – TheRealFakeNews Apr 7 '13 at 8:30
+@KevinC Could you expand on that? I'm not even sure where in the manual I would be able to find that. – TheRealFakeNews Apr 7 '13 at 8:32
+1
+width = 1\textwidth will scale the input pdf such that it actually fits the page. I may misunderstand how your problem really looks like, but to me it sounds like you want to push the left side of the pdf past the page margins. In my opinion it's better to stay to the margins. Alternatively you could use the PDFpages package and include the entire PDF? – Holene Apr 7 '13 at 8:34 
+@AlanH: Sorry I was wrong about my previous suggestion. But how about this: \hspace{-<some number>in}\includegraphics[angel=90]{...}? Basically this shifts the included picture left by <some number> inch. – Herr K. Apr 7 '13 at 9:03 
+show 2 more comments
+3 Answers
+Active
+Oldest
+Votes
+ 
+61
+
+ \includegraphics makes a box that is positioned the same way \mbox{} or A are positioned. If you want to move it 3cm to the left use
+
+\hspace*{-3cm}\includegraphics.....
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:32
+
+David Carlisle
+584k5151 gold badges13231323 silver badges21132113 bronze badges
+8
+Sorry to interrupt; why use the starred version of \hspace? – Svend Tveskæg Apr 7 '13 at 9:35
+16
+@SvendTveskæg because if it is the beginning of a line white glue is discarded so white space and normal \hspace have no effect. – David Carlisle Apr 7 '13 at 9:39 
+add a comment
+ 
+30
+
+To include shifts directly in the options part of the \includegraphics[options]{graphic.pdf} part of the command, a more straight forward way is the
+
+`trim=left bottom right top` 
+option. Here, left, bottom, right, and top are units of length, which trim the graphic for positive values and add space for negative values.
+
+So to move to the right by 5cm and 1 cm from the top, you would do:
+
+\includegraphics[trim=-5cm 0 0 -1cm]{diagram.pdf}
+share  improve this answer   follow  
+answered Jul 15 '14 at 12:47
+
+littlemind
+40144 silver badges22 bronze badges
+6
+It is better so post complete working examples instead fragments of code – user31729 Jul 15 '14 at 12:54
+This worked for me. – polym May 13 '15 at 23:28
+Does the trick, even though I find the parameter name to be misleading (I associate "trimming" with "cropping" instead of "offsetting"). – Waldir Leoncio May 11 '18 at 11:46
+This works especially well with figures that have some trailing whitespace preventing any accurate automatic centering! If you trim the whitespace, automatic centering with \includegraphics[width=\linewidth] works again. – bhnn Oct 7 '18 at 17:31 
+add a comment
+ 
+7
+
+Opting for an answer as the comments with a lot of code have pretty low readability. The ninja pic is taken from http://tinyurl.com/btapmmx
+
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\begin{document}
+\begin{figure}
+\begin{tikzpicture}
+    \begin{scope}
+    \node {Node 1: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+    \begin{scope}[xshift=-5cm]
+    \node {Node 2: \includegraphics[width=1 in]{images/ninja}};
+    \end{scope}
+\end{tikzpicture}
+\end{figure}
+\end{document}
+Node 2 is now shifted, so if you skip the code for the scopes and node 1, and include your pdf in node 2 you should be able to shift the included pdf here and there.
+
+The result: enter image description here
+share  improve this answer   follow  
+answered Apr 7 '13 at 9:12
+
+Holene
+6,38044 gold badges3131 silver badges6464 bronze badges
+Hmm, does the xshift option only work when there are two scopes? I was trying with only one scope, and the xshift option wasn't doing anything... – Herr K. Apr 7 '13 at 9:16
+1
+@KevinC No, you can simply do: \begin{tikzpicture}[xshift=-5cm] \node{node content}; \end{tikzpicture}. I added the two scopes just to illustrate the difference with and without xshift =) It works fine for me using only one scope too. – Holene Apr 7 '13 at 9:17 
+@Holene Okay, I think it's because the picture I'm importing has a slight margin, so I need to pull it past the margin in my article, which is why nothing was shifting for me, it's already pulled to the margin of the article. If I rescale it, which I tried, the picture doesn't look right. – TheRealFakeNews Apr 7 '13 at 9:19
+Have you tried adding the .tex source file in a figure environment instead of the compiled pdf, e.g. \input{source_file.tex}. I think you'll have to fix the orientation etc. in the .tex file though. – Holene Apr 7 '13 at 9:21
+@Holene: I did exactly what you said there... Perhaps it's my home computer's fault (I haven't updated my MikTeX for ages). – Herr K. Apr 7 '13 at 9:22
+show 1 more comment
+Your Answer
+
+
+Sign up or log in
+ Sign up using Google
+ Sign up using Facebook
+ Sign up using Email and Password
+Post as a guest
+Name
+
+Email
+Required, but never shown
+
+Post Your Answer
+By clicking “Post Your Answer”, you agree to our terms of service, privacy policy and cookie policy
+
+Not the answer you're looking for? Browse other questions tagged tikz-pgf graphics include landscape or ask your own question.
+
+The Overflow Blog
+The semantic future of the web
+Podcast 294: Cleaning up build systems and gathering computer history
+Featured on Meta
+New Feature: Table Support
+Linked
+
+0
+Shift an image horizontally
+8
+Positioning includegraphics vertically on a line?
+3
+Add extra space at the bottom with a rectangle containing an image, TikZ
+1
+moving figure to the right
+1
+How to move includegraphics
+Related
+
+2
+Problems with alignment with landscape table
+11
+graphics - dynamic image placement
+150
+Placeholder for figure/includegraphics
+4
+How to change font size in graphics included with \includegraphics
+0
+How can I change graphics with timeout in a beamer?
+5
+Is there any way to shift two \includegraphics images? Having trouble with \begin{figure}
+8
+Imposition for an 8 page booklet using pgfpages
+0
+How to use \includegraphics with package graphics?
+2
+Package-Conflict booklet and graphicx?
+1
+Arrow between BTrees
+Hot Network Questions
+
+Calculating parking fees, given start and end timestamps
+What does the crash early concept mean?
+Where can I travel to receive a COVID vaccine as a tourist?
+What is an idiom for "a supervening act that renders a course of action unnecessary"?
+Given a legal chess position, is there an algorithm that gets a series of moves that lead to it?
+How to gzip 100 GB files faster with high compression
+Email server certificate valid according to CheckTLS, invalid according to Thunderbird
+Why isn't the Sad Clown's torso in Stud.io?
+Why it is important to write a function as sum of even and odd functions?
+"Factorise" a quadratic
+Uniqueness of infinite direct sum decomposition
+I don't understand the bottom number in a time signature
+Scramble a Megaminx!
+How could a 6-way, zero-G, space constrained, 3D, flying car intersection work?
+Why would a company prevent their employees from selling their pre-IPO equity?
+What is the Schäffer Clef?
+I'm piece of cake. Anti-me can be fatal
+How to plot an array of lines?
+How to view annotated powerpoint presentations in Ubuntu?
+Effects of being hit by an object going at FTL speeds
+Guitarist and Bassist as only Bandmembers - Rhythmsection?
+Reviewing article and bad-faith citation
+Does the Qiskit ADMM optimizer really run on quantum computers?
+Mimic the X11 Primary selection
+ Question feed
+
+TEX - LATEX
+
+Tour
+Help
+Chat
+Contact
+Feedback
+Mobile
+Disable Responsiveness
+COMPANY
+
+Stack Overflow
+For Teams
+Advertise With Us
+Hire a Developer
+Developer Jobs
+About
+Press
+Legal
+Privacy Policy
+STACK EXCHANGE
+NETWORK
+
+Technology
+Life / Arts
+Culture / Recreation
+Science
+Other
+Blog
+Facebook
+Twitter
+LinkedIn
+Instagram
+site design / logo © 2020 Stack Exchange Inc; user contributions licensed under cc by-sa. rev 2020.12.10.38158
+
+ iPad Insight". Ipadinsight.com. 2011-05-12. Archived from the original on 2012-10-13. Retrieved 2012-07-08.
